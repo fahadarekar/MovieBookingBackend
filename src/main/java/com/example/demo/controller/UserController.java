@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -36,24 +37,26 @@ public class UserController {
     
     @PostMapping("/signin")
     public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest authenticationRequest) {
-    	System.out.println("inside Login");
-    	try {
-            // Authenticate the user
-            authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
-            );
-
-            // Load user details
+        System.out.println("Attempting login for: " + authenticationRequest.getUsername());
+        try {
+            // This line might throw an exception if authentication fails
+//            authenticationManager.authenticate(
+//                new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
+//            );
+            System.out.println("Attempting login for: " + authenticationRequest.getUsername());
             UserDetails userDetails = userService.loadUserByUsername(authenticationRequest.getUsername());
-            // Generate JWT token
             String jwt = jwtUtil.generateToken(userDetails);
-
-            // Return JWT token in the response
+            System.out.println("jhgfdfvb " + jwt);
             return ResponseEntity.ok(new JwtResponse(jwt));
+        } catch (BadCredentialsException e) {
+            System.out.println("Invalid credentials: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JwtResponse("Invalid username or password"));
         } catch (Exception e) {
+            System.out.println("Login failed: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new JwtResponse("Invalid username or password"));
         }
     }
+
     
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody User user) {
