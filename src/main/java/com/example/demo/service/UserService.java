@@ -1,42 +1,41 @@
+// src/main/java/com/example/demo/service/UserService.java
 package com.example.demo.service;
 
-import com.example.demo.entity.User;
-import com.example.demo.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Optional;
+import com.example.demo.dto.RegisterRequest;
+import com.example.demo.entity.User;
+import com.example.demo.repo.UserRepo;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     @Autowired
     private UserRepo userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder; // Inject the PasswordEncoder
+    private PasswordEncoder encoder;
 
-    // This method is for loading user details by username
-    @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), new ArrayList<>());
-    }
+    public User registerUser(RegisterRequest signUpRequest) {
+    	
+    	System.out.println(signUpRequest.getUsername()+ signUpRequest.getEmail() + signUpRequest.getPassword());
+        // Check if username or email already exists
+        if (userRepository.existsByName(signUpRequest.getUsername())) {
+            throw new RuntimeException("Error: Username is already taken!");
+        }
 
-    // Other methods
-    public Optional<User> getUser(String email) {
-        return userRepository.findByEmail(email);
-    }
+        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
+            throw new RuntimeException("Error: Email is already in use!");
+        }
 
-    public void saveUser(User user) {
-        // Encode the password before saving
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+        // Create new user's account
+        User user = new User();
+        user.setName(signUpRequest.getUsername());
+        user.setEmail(signUpRequest.getEmail());
+        user.setPassword(encoder.encode(signUpRequest.getPassword()));
+
+        return userRepository.save(user);
     }
 }
