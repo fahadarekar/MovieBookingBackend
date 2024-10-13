@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -109,6 +110,18 @@ public class BookingService {
     		seatRepository.save(s);
     	}
     }
+
+
+	public List<Movie> getBookedMovie(Long userId) {
+		List<Booking> book = bookingRepository.findByUserId(userId);
+
+		List<Movie> movieIds = new ArrayList<>();;
+		for(Booking b: book) {
+			movieIds.add(b.getMovie());
+		}
+		return movieIds;
+		
+	}
     
 
 }

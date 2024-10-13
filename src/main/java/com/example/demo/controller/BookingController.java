@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.BookSlotDto;
@@ -49,6 +50,14 @@ public class BookingController {
 		List<Movie> listOfMovies = movieRepo.findAll();
 		
 		return ResponseEntity.status(HttpStatus.OK).body(listOfMovies);
+	}
+	
+	@PostMapping("/bookedMovie")
+	public ResponseEntity<List<Movie>> getBookedMovie(@RequestParam Long userId){
+		System.out.println("line 57 book API" + userId);
+		List<Movie> bookedMovies = bookingService.getBookedMovie(userId);
+		
+		return ResponseEntity.status(HttpStatus.OK).body(bookedMovies);
 	}
 	
 	@GetMapping("/movie/ids")
