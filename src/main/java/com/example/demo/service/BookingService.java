@@ -88,13 +88,19 @@ public class BookingService {
             seat.setIsBooked(true);
             seat.setMovie(movie); 
             seatRepository.save(seat);
-
-            Booking booking = new Booking();
+        }
+        
+        System.out.println("dfghjkl" + bookingRepository.existsByMovieId(movieId));
+        
+        if(!bookingRepository.existsByMovieId(movieId)) {
+        	Booking booking = new Booking();
             booking.setUser(user);
             booking.setMovie(movie);
             booking.setBookingTime(showtime);
-            booking.setSeat(seat);
-            bookingRepository.save(booking); 
+            bookingRepository.save(booking);
+        }
+        else {
+        	System.out.println("dfghjkl");
         }
         return null;
     }

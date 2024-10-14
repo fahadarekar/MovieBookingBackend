@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface BookingRepo extends JpaRepository<Booking, Long> {
     List<Booking> findByUserId(Long userId);
+
+	boolean existsByMovieId(Long movieId);
 }
