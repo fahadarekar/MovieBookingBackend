@@ -2,6 +2,7 @@
 package com.example.demo.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,7 @@ import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.RegisterRequest;
 import com.example.demo.entity.Movie;
 import com.example.demo.entity.User;
+import com.example.demo.repo.MovieRepo;
 import com.example.demo.repo.UserRepo;
 import com.example.demo.security.JwtUtils;
 import com.example.demo.service.BookingService;
@@ -39,6 +42,9 @@ public class UserController {
 
     @Autowired
     UserRepo userRepository;
+    
+    @Autowired
+	public MovieRepo movieRepo;
     
     @Autowired
     BookingService bookingService;
@@ -101,6 +107,14 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", "Authentication error"));
         }
     }
+    
+    @GetMapping("/movie")
+	public ResponseEntity<List<Movie>> getMovies(){
+		System.out.println("Added service class876543");
+		List<Movie> listOfMovies = movieRepo.findAll();
+		
+		return ResponseEntity.status(HttpStatus.OK).body(listOfMovies);
+	}
 
 
     @PostMapping("/addMovie")

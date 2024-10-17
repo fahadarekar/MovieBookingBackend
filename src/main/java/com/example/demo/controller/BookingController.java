@@ -21,7 +21,7 @@ import com.example.demo.service.BookingService;
 
 @RestController
 @RequestMapping("/booking")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3001")
 public class BookingController {
 	
 	@Autowired
@@ -44,13 +44,7 @@ public class BookingController {
 	
 	
 	
-	@GetMapping("/movie")
-	public ResponseEntity<List<Movie>> getMovies(){
-		System.out.println("Added service class876543");
-		List<Movie> listOfMovies = movieRepo.findAll();
-		
-		return ResponseEntity.status(HttpStatus.OK).body(listOfMovies);
-	}
+	
 	
 	@PostMapping("/bookedMovie")
 	public ResponseEntity<List<Movie>> getBookedMovie(@RequestParam Long userId){
